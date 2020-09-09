@@ -25,6 +25,9 @@ total_votes = 0
 # Candidate Options
 candidate_options = []
 
+# Declare Empty Candidate Results Output Dictionary
+candidate_results = {}
+
 # Declare Empty Candidate Votes Dictionary
 candidate_votes = {}
 
@@ -82,8 +85,8 @@ for candidate_name in candidate_votes:
     vote_percentage = float(votes) / float(total_votes) * 100
     
     # Print out each candidate's name, vote count, and percentage of
-    # votes to the terminal.
-    print(f"{candidate_name}: {vote_percentage:.1f}% ({votes:,})\n")
+    # votes to be set to the output file.
+    candidate_results[candidate_name] = (f"{candidate_name}: {vote_percentage:.1f}% ({votes:,})\n")
 
     if (votes > winning_count) and (vote_percentage > winning_percentage):
 
@@ -93,6 +96,14 @@ for candidate_name in candidate_votes:
         winning_percentage = vote_percentage
         # And, set the winning_candidate equal to the candidate's name.
         winning_candidate = candidate_name
+
+# Set formatted text file output
+output_text = (
+                    f"\nElection Results\n"
+                    f"-------------------------\n"
+                    f"Total Votes: {votes:,}\n"
+                    f"-------------------------\n")
+
 
 # Print out the winning candidate, vote count and percentage to
 # terminal.
@@ -104,12 +115,17 @@ winning_candidate_summary = (
     f"-------------------------\n")
 print(winning_candidate_summary)
 
-# Using the open() function with the "w" mode we will write data to the file.
-# Using the with statement open the file as a text file.
-outfile = open(file_to_save, "w")
-# Write some data to the file.
-outfile.write(f"Total Votes in the election is {total_votes:,}")
+with open(file_to_save, "w") as txt_file:
+    
+    # Write the winning candidate summary to the analysis file
+    txt_file.write(output_text)
+
+    for candidate_name in candidate_votes:
+
+        # Write the candidates results to the analysis file
+        txt_file.write(candidate_results[candidate_name])
+    
 
 # Close files
 election_data.close()
-outfile.close()
+txt_file.close()
